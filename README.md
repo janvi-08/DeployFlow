@@ -359,20 +359,37 @@ Continuous integration is managed via GitHub Actions (`.github/workflows/ci.yml`
 
 ## Screenshots & Visuals
 
-*(Capture and place PNG screenshots into `docs/screenshots/`)*
+### 1. Dashboard Overview
+Workspace health metrics, active workloads, quota consumption, and tenant navigation.
+![Dashboard Overview](docs/screenshots/1-dashboard-overview.png)
 
-| Viewport / Feature | Description |
-|---|---|
-| **Overview Dashboard** | Workspace health metrics, quick deployment trigger, and project catalog |
-| **Responsive Viewport Preview** | Multi-device emulator (Desktop, Tablet 768px, Mobile 375px) with edge latency telemetry |
-| **SSE Build Log Terminal** | Live streaming terminal emulator showing build lifecycle phases |
-| **Zero-Downtime Rollback** | 1-click deployment promotion switching active versions without downtime |
-| **AI-Ops Diagnosis** | Simulated root-cause analysis, container log traces, and self-healing configs |
+### 2. Live Application Preview & Viewport Emulator
+Multi-device responsive viewport preview (Desktop, Tablet 768px, Mobile 375px) with real-time edge latency telemetry.
+![Live Application Preview](docs/screenshots/2-live-preview.png)
+
+### 3. Real-Time SSE Build Logs & Terminal
+Server-Sent Events streaming timestamped build pipeline phases directly to the developer terminal emulator.
+![SSE Build Logs Terminal](docs/screenshots/3-sse-terminal-logs.png)
+
+### 4. Edge-Served Application & Live Branding
+Real standalone web application served by the Express Edge Proxy at `/sites/:projectSlug` with injected floating DeployFlow badge.
+![Edge-Served Application](docs/screenshots/4-edge-served-app.png)
+
+### 5. AI-Ops Incident Simulator & Self-Healing
+Interactive SRE incident triage simulator showing real log traces, root-cause diagnosis, and automated config patch generation.
+![AI-Ops Incident Simulator](docs/screenshots/5-ai-ops-incident.png)
 
 ---
 
-## Future Enhancements
+## Limitations & Future Scope
 
+### Architecture Limitations & Scoping
+To maintain engineering transparency:
+- **Process & Filesystem Isolation**: Build sandboxing is executed via Node.js processes and filesystem directories. It does not employ a multi-tenant Kubernetes worker cluster.
+- **Edge Routing Simulation**: The edge proxy is an Express and Nginx gateway providing local and containerized route dispatch and SPA fallbacks, rather than a distributed Anycast CDN.
+- **Simulated Billing State**: Subscription upgrades and quota refreshes operate on internal state machines without processing live credit cards or live Stripe webhooks.
+
+### Future Enhancements
 - **Object Storage Adapter**: S3/MinIO driver interface for storing deployment artifacts across distributed cloud object stores.
 - **Dynamic Container Runners**: Ephemeral Docker worker pools for executing isolated untrusted build scripts.
 - **Automated TLS Certificates**: Automated Let's Encrypt TLS certificate provisioning for custom domains.
