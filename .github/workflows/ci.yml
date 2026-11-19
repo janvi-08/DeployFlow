@@ -1,0 +1,70 @@
+name: DeployFlow CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test-server:
+    name: Backend Lint, Type Check & Integration Tests
+    runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:7.0
+        ports:
+          - 27017:27017
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Runtime (v22)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install Server Dependencies
+        working-directory: server
+        run: npm ci
+
+      - name: Type Check Backend Source
+        working-directory: server
+        run: npx tsc --noEmit
+
+      - name: Execute Supertest & Jest Integration Tests
+        working-directory: server
+        env:
+          NODE_ENV: test
+          MONGODB_URI: mongodb://localhost:27017/deployflow_test
+          JWT_SECRET: ci_pipeline_super_secret_jwt_key_testing_12345
+          COOKIE_SECRET: ci_pipeline_cookie_signing_secret_key_12345
+        run: npm test
+
+  test-client:
+    name: Frontend Lint, Type Check & Component Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Runtime (v22)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install Client Dependencies
+        working-directory: client
+        run: npm ci
+
+      - name: Type Check & Build Client Production Bundle
+        working-directory: client
+        run: npm run build
+
+      - name: Execute Vitest Component Suite
+        working-directory: client
+        run: npm test
