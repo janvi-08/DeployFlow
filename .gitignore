@@ -27,10 +27,11 @@ Thumbs.db
 coverage/
 .nyc_output/
 
+# Database & Generated deployment data
 mongodb_data/
-
-# Generated deployment data
-server/deployed_sites/
+**/mongodb_data/
+deployed_sites/
+**/deployed_sites/
 
 # TypeScript build cache
 *.tsbuildinfo
